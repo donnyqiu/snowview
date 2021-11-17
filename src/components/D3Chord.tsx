@@ -33,8 +33,9 @@ class D3Chord extends React.Component<D3GraphProps, {}> {
     const {data, colors, labels} = this.props;
 
     const chord = d3.chord()
-      .padAngle(0.05)
-      .sortSubgroups(d3.descending);
+        .padAngle(0.1)
+        .sortSubgroups(d3.descending)
+        .sortChords(d3.descending);
 
     const arc = d3.arc<ChordGroup>()
       .innerRadius(innerRadius)
@@ -45,7 +46,7 @@ class D3Chord extends React.Component<D3GraphProps, {}> {
 
     const svg = d3.select<SVGSVGElement, {}>(`#${this.props.id}`);
 
-    const width = 100;
+    const width = 150;
     const height = 100;
 
     const binaryData: number[][] = [];
@@ -58,7 +59,7 @@ class D3Chord extends React.Component<D3GraphProps, {}> {
 
     this.canvas = svg
       .append<SVGGElement>('g')
-      .attr('transform', `translate(${width / 2}, ${height / 2})`)
+      .attr('transform', `translate(${width / 3}, ${height / 2})`)
       .datum(chord(binaryData))
       .on('onMouseLeave', this.onMouseLeave);
 
@@ -73,44 +74,51 @@ class D3Chord extends React.Component<D3GraphProps, {}> {
       .attr('class', 'groups')
       .selectAll('g')
       .data<ChordGroup>(chords => chords.groups)
-      .enter().append<SVGGElement>('g')
-      .on('onMouseOver', this.onMouseOver);
+      .enter().append<SVGGElement>('g');
 
     group.append('path')
       .attr('id', d => `p${d.index}`)
       .style('fill', d => colors[d.index])
-      .attr('d', arc);
+      .attr('d', arc)
+      .on('mouseenter', this.onMouseOver)
+      .on('mouseleave', this.onMouseLeave);
 
-    group.append('title').html(d => labels[d.index]);
+    group.append('title')
+      .html(d => labels[d.index]);
 
     this.ribbons
       .append('path')
       .attr('d', ribbon)
       .style('fill', d => mix(colors[d.source.index], colors[d.target.index]))
       .style('stroke-width', '0.1')
-      .style('stroke', 'black');
-
+      .style('stroke', 'black')
+      .on('mouseenter', this.MouseOver)
+      .on('mouseleave', this.onMouseLeave);
     this.ribbons
       .append('title')
-      .html(d => data[d.source.index][d.target.index].toString());
+      .html(d =>  `${labels[d.source.index].substr(0, labels[d.source.index].indexOf('('))} → ${labels[d.target.index].substr(0, labels[d.target.index].indexOf('('))} ${data[d.source.index][d.target.index]}`);
 
     group.append('svg:text')
-      .style('font-size', '4px')
-      .style('text-anchor', 'middle')
-      .attr('dx', function (d: ChordGroup) {
-        let anchor = (d.startAngle + d.endAngle) / 2;
-        let radius = outerRadius + 10;
-        return radius * Math.sin(anchor);
-      })
-      .attr('dy', function (d: ChordGroup) {
-        let anchor = (d.startAngle + d.endAngle) / 2;
-        let radius = outerRadius + 10;
-        return -radius * Math.cos(anchor);
-      })
+      .style('font-size', '2px')
+      .each(d => (d.angle = (d.startAngle + d.endAngle) / 2))
+      .attr('dy', '0.35em')
+      .attr('transform', d => `
+        rotate(${(d.angle * 180 / Math.PI - 90)})
+        translate(${outerRadius + 0.1})
+        ${d.angle > Math.PI ? 'rotate(180)' : ''}
+      `)
+      .attr('text-anchor', d => d.angle > Math.PI ? 'end' : null)
+      .attr('text-anchor', d => (d.startAngle + d.endAngle) / 2 > Math.PI ? 'end' : null)
       .text(function (d: ChordGroup) {
         return labels[d.index].substr(0, labels[d.index].indexOf('('));
       });
 
+  }
+
+  MouseOver = (d: { source: { index: number; }; target: { index: number; }; }) => {
+    this.ribbons.classed('fade', p => {
+      return !(p.source.index === d.source.index && p.target.index === d.target.index);
+    });
   }
 
   onMouseOver = (d: {}, i: {}) => {

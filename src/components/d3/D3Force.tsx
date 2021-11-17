@@ -70,8 +70,9 @@ class D3Force<N extends INode, R> extends React.Component<D3ForceProps<N, R>, D3
   svg: d3.Selection<SVGGElement, {}, HTMLElement, {}>;
 
   simulation: d3.Simulation<D3Node<N>, D3Relation<N, R>> = d3.forceSimulation<D3Node<N>>()
-    .force('charge', d3.forceManyBody())
-    .force('collide', d3.forceCollide(nodeRadius * 1.5));
+    .force('charge', d3.forceManyBody().strength(-350).distanceMin(20).distanceMax(500))
+    .force('collide', d3.forceCollide().radius(nodeRadius * 1.5).iterations(20))
+    .force('link', d3.forceLink());
 
   updateRelation = (rel: D3Relation<N, R>) => {
     const x1 = rel.source.x;
@@ -127,6 +128,17 @@ class D3Force<N extends INode, R> extends React.Component<D3ForceProps<N, R>, D3
     this.setState({
       nodes: newNode
     });
+    this.simulation.alpha(1).alphaDecay(0.005).velocityDecay(0.25).restart();
+  }
+
+  dblClick = (node: D3ForceNode) => {
+    const newNode = [...this.state.nodes];
+    const nd = newNode.find(n => n.raw.getID() === node.props.id);
+    nd!.fx = null;
+    nd!.fy = null;
+    this.setState({
+      nodes: newNode
+    });
   }
 
   componentDidMount() {
@@ -164,7 +176,9 @@ class D3Force<N extends INode, R> extends React.Component<D3ForceProps<N, R>, D3
 
     this.simulation.force<ForceLink<D3Node<N>, D3Relation<N, R>>>('link')!
       .links(this.links)
-      .strength(0.03);
+      .strength(0.1);
+
+    this.simulation.restart();
 
   }
 
@@ -177,9 +191,9 @@ class D3Force<N extends INode, R> extends React.Component<D3ForceProps<N, R>, D3
 
     this.simulation.force<ForceLink<D3Node<N>, D3Relation<N, R>>>('link')!
       .links(this.links)
-      .strength(0.03);
+      .strength(0.05);
 
-    this.simulation.alpha(1).restart();
+    this.simulation.alpha(1).alphaDecay(0.005).velocityDecay(0.25).restart();
   }
 
   render() {
@@ -263,6 +277,7 @@ class D3Force<N extends INode, R> extends React.Component<D3ForceProps<N, R>, D3
                   text={getNodeText(n.raw)}
                   simulation={this.simulation}
                   dragCallback={this.dragCallback}
+                  dblClick={this.dblClick}
                   onNodeClick={onNodeClick}
                   highlight={highlight.exists(x => x.toString() === n.raw.getID())}
                 />

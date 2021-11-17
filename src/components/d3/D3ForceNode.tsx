@@ -11,6 +11,7 @@ interface D3ForceNodeProps {
     y: number;
     simulation: d3.Simulation<{}, undefined>;
     dragCallback: (node: D3ForceNode, x: number, y: number) => void;
+    dblClick: (node: D3ForceNode) => void;
     highlight?: boolean;
     onNodeClick?: (id: string) => void;
 }
@@ -20,7 +21,7 @@ class D3ForceNode extends React.Component<D3ForceNodeProps, {}> {
     g: SVGGElement | null;
 
     componentDidMount() {
-        const {simulation, dragCallback, onNodeClick, id} = this.props;
+        const {simulation, dragCallback, dblClick, onNodeClick, id} = this.props;
 
         const node = d3.select(this.g)
             .call(d3.drag<SVGGElement, {}>()
@@ -37,7 +38,8 @@ class D3ForceNode extends React.Component<D3ForceNodeProps, {}> {
                         simulation.alphaTarget(0);
                     }
                 })
-            );
+            )
+            .on('dblclick', () => {dblClick(this);});
 
         if (onNodeClick) {
             node.on('click', () => onNodeClick(id));

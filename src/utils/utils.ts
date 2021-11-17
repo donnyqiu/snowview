@@ -46,13 +46,13 @@ export function colorHash(s: string): number {
 
 export function name2color(name: string): string {
   if (name === 'Class') {
-    return '#43CD80';
+    return '#0b860b';
   }
   if (name === 'Method') {
-    return '#9AFF9A';
+    return '#78ea58';
   }
   if (name === 'Field') {
-    return '#C1FFC1';
+    return '#d0e87d';
   }
   if (name === 'GitUser') {
     return '#D3D3D3';

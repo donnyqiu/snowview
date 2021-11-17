@@ -1,6 +1,6 @@
 import * as React from 'react';
-import GraphPanel from './GraphPanel';
-import FindEntityPanel from './FindEntityPanel';
+import ClickMenu from './ClickMenu';
+// import FindEntityPanel from './FindEntityPanel';
 import InformationPanel from './InformationPanel';
 import { Grid, LinearProgress, withStyles, WithStyles } from 'material-ui';
 import { connect } from 'react-redux';
@@ -52,10 +52,10 @@ class GraphPanels extends React.Component<GraphPanelsProps & GraphPanelsStyles, 
           }
         </Grid>
         <Grid item={true} xs={8} className={classes.leftPanel}>
-          <GraphPanel project={project}/>
+          <ClickMenu project={project}/>
         </Grid>
         <Grid item={true} xs={4} className={classes.rightPanel}>
-          <FindEntityPanel project={project}/>
+          {/* <FindEntityPanel project={project}/> */}
           <div className={classes.informationPanel}>
             <InformationPanel/>
           </div>

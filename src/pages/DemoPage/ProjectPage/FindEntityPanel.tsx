@@ -49,7 +49,7 @@ class FindEntityPanel extends React.Component<FindEntityPanelProps & WithStyles<
     event.preventDefault();
 
     const catalog = this.input.value;
-    const {dispatch, selectedNode, relationLists, relations, project} = this.props;
+    const { dispatch, selectedNode, relationLists, relations, project } = this.props;
 
     const relationList = relationLists.get(selectedNode.get);
 
@@ -63,7 +63,30 @@ class FindEntityPanel extends React.Component<FindEntityPanelProps & WithStyles<
     readyToShow.forEach(r => {
       const source = r.source, target = r.target;
       const otherID = source === selectedNode.get ? target : source;
-      dispatch(fetchNodeWorker({project, id: otherID}));
+      dispatch(fetchNodeWorker({ project, id: otherID }));
+    });
+
+    dispatch(showRelations(readyToShow.map(x => x.id)));
+  }
+
+  handleClick = () => {
+
+    const catalog = this.input.value;
+    const { dispatch, selectedNode, relationLists, relations, project } = this.props;
+
+    const relationList = relationLists.get(selectedNode.get);
+
+    const rels = relationList.get
+      .map(x => relations.get(x))
+      .filter(x => !x.shown)
+      .filter(x => x.types.some(t => t === catalog));
+
+    const readyToShow = rels.length > 0 ? chance.pickset(rels, 999999) : [];
+
+    readyToShow.forEach(r => {
+      const source = r.source, target = r.target;
+      const otherID = source === selectedNode.get ? target : source;
+      dispatch(fetchNodeWorker({ project, id: otherID }));
     });
 
     dispatch(showRelations(readyToShow.map(x => x.id)));
@@ -72,7 +95,7 @@ class FindEntityPanel extends React.Component<FindEntityPanelProps & WithStyles<
   render() {
     let body = null;
 
-    const {dispatch, selectedNode, relationLists, relations} = this.props;
+    const { dispatch, selectedNode, relationLists, relations } = this.props;
 
     if (selectedNode.isEmpty) {
       body = <Typography component="p"> No entity selected. </Typography>;
@@ -81,7 +104,7 @@ class FindEntityPanel extends React.Component<FindEntityPanelProps & WithStyles<
       const selectedRelationList = relationLists.get(selected);
 
       if (selectedRelationList.isEmpty) {
-        body = <LinearProgress/>;
+        body = <LinearProgress />;
       } else {
         const relationTypes = _.chain(selectedRelationList.get)
           .flatMap(x => relations.get(x).types)
@@ -94,12 +117,13 @@ class FindEntityPanel extends React.Component<FindEntityPanelProps & WithStyles<
                 <InputLabel htmlFor="relation-type">Relation Type</InputLabel>
                 <Select
                   native={true}
-                  input={<Input id="relation-type" inputRef={(input) => this.input = input}/>}
+                  input={<Input id="relation-type" inputRef={(input) => this.input = input} />}
                 >
                   {relationTypes.map(t => <option key={t} value={t}>{t}</option>)}
                 </Select>
               </FormControl>
             </FormGroup>
+            <Button onClick={this.handleClick}>EXPAND_All</Button>
             <Button type="submit">EXPAND</Button>
             <Button onClick={() => dispatch(removeNode(selected))}>HIDE</Button>
           </form>

@@ -10,7 +10,7 @@ const transition = {
 
 const container = {
   paddingRight: '60px',
-  paddingLeft: '60px',
+  paddingLeft: '30px',
 };
 
 const flexContainer = {

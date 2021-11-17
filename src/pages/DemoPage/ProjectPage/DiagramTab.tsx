@@ -46,7 +46,7 @@ const styles = () => ({
   info: {
     fontSize: '1.8rem',
     margin: '20px',
-    fontWeight: "bold"
+    fontWeight: 'bold'
   }
 }) as StyleRules<DiagramTabStyleKeys>;
 
@@ -98,8 +98,8 @@ class DiagramTab extends Component<DiagramTabProps & DiagramTabStyles, DiagramTa
     if (!navGraph.fetching) {
       let numberNodes = 0 ;
       let numberEdges = 0 ;
-      navGraph.nodes.map( n=>{ numberNodes+=n.count});
-      navGraph.relations.map(relation =>{numberEdges+=relation.count})
+      navGraph.nodes.map( n => { numberNodes+=n.count});
+      navGraph.relations.map(relation => {numberEdges+=relation.count});
 
       navBody = navGraph.matrix.isEmpty ?
         <Typography className={classes.white}>Failed to load nav graph</Typography> : (
