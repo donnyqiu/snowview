@@ -100,14 +100,14 @@ class D3Chord extends React.Component<D3GraphProps, {}> {
 
     group.append('svg:text')
       .style('font-size', '2px')
-      .each(d => (d.angle = (d.startAngle + d.endAngle) / 2))
+      // .each(d => (d.angle = (d.startAngle + d.endAngle) / 2))
       .attr('dy', '0.35em')
       .attr('transform', d => `
-        rotate(${(d.angle * 180 / Math.PI - 90)})
+        rotate(${((d.startAngle + d.endAngle) / 2 * 180 / Math.PI - 90)})
         translate(${outerRadius + 0.1})
-        ${d.angle > Math.PI ? 'rotate(180)' : ''}
+        ${(d.startAngle + d.endAngle) / 2 > Math.PI ? 'rotate(180)' : ''}
       `)
-      .attr('text-anchor', d => d.angle > Math.PI ? 'end' : null)
+      // .attr('text-anchor', d => (d.startAngle + d.endAngle) / 2 > Math.PI ? 'end' : null)
       .attr('text-anchor', d => (d.startAngle + d.endAngle) / 2 > Math.PI ? 'end' : null)
       .text(function (d: ChordGroup) {
         return labels[d.index].substr(0, labels[d.index].indexOf('('));
