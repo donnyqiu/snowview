@@ -8,8 +8,8 @@ class DemoPage extends React.Component<{}, {}> {
     return (
       <div>
         <Switch>
-          <Route exact={true} path="/demo" component={CatalogPage}/>
-          <Route path="/demo/:project/:tab" component={ProjectPage}/>
+          <Route exact={true} path="/demo" component={ProjectPage}/>
+          <Route path="/demo/:tab" component={ProjectPage}/>
         </Switch>
       </div>
     );

@@ -5,6 +5,7 @@ import appRoutes from './routes/app';
 import { withStyles } from 'material-ui';
 import appStyle, { AppStyle } from './variables/styles/AppStyle';
 import Footer from './components/Footer/Footer';
+import ProjectPage from './pages/DemoPage/ProjectPage/ProjectPage';
 
 const image = require('./assets/img/sidebar.jpg');
 const logo = require('./assets/img/logo.png');
@@ -21,6 +22,7 @@ class App extends React.Component<AppStyle, {}> {
             <Switch>
               {appRoutes.map((prop, key) =>
                 <Route exact={prop.exact} path={prop.path} component={prop.component} key={key}/>
+                // <Route path="/demo/:tab" component={ProjectPage}/>
               )}
             </Switch>
           </div>
