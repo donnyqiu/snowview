@@ -19,12 +19,8 @@ class App extends React.Component<AppStyle, {}> {
         <Sidebar logo={logo} logoText="" image={image} routes={appRoutes}/>
         <div className={classes.mainPanel}>
           <div className={classes.content}>
-            <Switch>
-              {appRoutes.map((prop, key) =>
-                <Route exact={prop.exact} path={prop.path} component={prop.component} key={key}/>
-                // <Route path="/demo/:tab" component={ProjectPage}/>
-              )}
-            </Switch>
+            <Route exact={true} path="/" component={ProjectPage}/>
+            {/* <Route path="/demo/:tab" component={ProjectPage}/> */}
           </div>
           <Footer/>
         </div>

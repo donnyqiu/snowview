@@ -29,7 +29,7 @@ class ProjectPage extends React.Component<RouteComponentProps<ProjectPageRoutePr
           <Tab value="graph" label="模板检索"/>
         </Tabs>
         <Switch>
-          <Route path="/demo/graph" component={QueryTab}/>
+          <Route path="/" component={QueryTab}/>
         </Switch>
       </div>
     );

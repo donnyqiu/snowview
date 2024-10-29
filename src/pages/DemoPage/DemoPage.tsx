@@ -7,10 +7,8 @@ class DemoPage extends React.Component<{}, {}> {
   render() {
     return (
       <div>
-        <Switch>
-          <Route exact={true} path="/demo" component={ProjectPage}/>
-          <Route path="/demo/:tab" component={ProjectPage}/>
-        </Switch>
+        <Route exact={true} path="/demo" component={ProjectPage}/>
+        <Route path="/demo/:tab" component={ProjectPage}/>
       </div>
     );
   }
