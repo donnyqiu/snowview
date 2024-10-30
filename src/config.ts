@@ -13,9 +13,9 @@ export const DOC_PREDEFINED_QUERIES = [
 ];
 
 export const GRAPH_PREDEFINED_QUERIES = [
-  'Who change class named IndexReader',
-  'How to write a document into an index?',
-  'How to get all field names in an IndexReader?',
-  'How to parse wildcard query using TokenFilter?',
-  'list method of Class IndexWriter'
+  // 'Who change class named IndexReader',
+  // 'How to write a document into an index?',
+  // 'How to get all field names in an IndexReader?',
+  // 'How to parse wildcard query using TokenFilter?',
+  // 'list method of Class IndexWriter'
 ];
