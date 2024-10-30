@@ -28,7 +28,7 @@ export interface AppRoute {
 
 const appRoutes: AppRoute[] = [
   {
-    path: '/demo',
+    path: '/',
     sidebarName: 'Use It',
     navbarName: 'Use It',
     icon: Dashboard,

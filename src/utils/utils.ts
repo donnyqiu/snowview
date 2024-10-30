@@ -63,6 +63,12 @@ export function name2color(name: string): string {
   if (name === 'Docx') {
     return '#4169E1';
   }
+  if (name === 'Componet') {
+    return '#0b860b'
+  }
+  if (name === 'ConfigItem') {
+    return '#78ea58'
+  }
   const h = colorHash(name) % 360;
   return Math.ceil(h / 30) % 2 === 0 ?
     hsl(h, 1, 0.8).rgb().toString() :

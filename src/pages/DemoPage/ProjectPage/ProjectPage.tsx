@@ -26,7 +26,7 @@ class ProjectPage extends React.Component<RouteComponentProps<ProjectPageRoutePr
           scrollable={true}
           scrollButtons="auto"
         >
-          <Tab value="graph" label="模板检索"/>
+          {/* <Tab value="" label="模板检索"/> */}
         </Tabs>
         <Switch>
           <Route path="/" component={QueryTab}/>

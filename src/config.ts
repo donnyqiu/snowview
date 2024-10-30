@@ -18,4 +18,6 @@ export const GRAPH_PREDEFINED_QUERIES = [
   // 'How to get all field names in an IndexReader?',
   // 'How to parse wildcard query using TokenFilter?',
   // 'list method of Class IndexWriter'
+  'Calendar',
+  'QRCode'
 ];
