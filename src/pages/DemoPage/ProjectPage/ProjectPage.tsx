@@ -4,6 +4,7 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 import DocumentTab from './DocumentTab';
 import DiagramTab from './DiagramTab';
 import { Route, RouteComponentProps, Switch } from 'react-router';
+import DocSearchTab from './DocSearchGraphTab';
 
 interface ProjectPageRouteProps {
   project: string;
@@ -29,7 +30,7 @@ class ProjectPage extends React.Component<RouteComponentProps<ProjectPageRoutePr
           {/* <Tab value="" label="模板检索"/> */}
         </Tabs>
         <Switch>
-          <Route path="/" component={QueryTab}/>
+          <Route path="/" component={DocSearchTab}/>
         </Switch>
       </div>
     );

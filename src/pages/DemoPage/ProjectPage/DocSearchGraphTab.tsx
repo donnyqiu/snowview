@@ -42,11 +42,6 @@ class GraphTab extends React.Component<GraphTabProps & GraphTabStyles, {}> {
 
     return (
       <div>
-        <SearchForm
-          query={query}
-          predefinedQueries={GRAPH_PREDEFINED_QUERIES}
-          callback={(param: { query: string }) => fetchGraphWorker({project, query: param.query})}
-        />
         <DocSearch 
           callback={(param: { query: string }) => fetchGraphWorker({project, query: param.query})} 
         />
