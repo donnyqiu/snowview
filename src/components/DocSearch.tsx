@@ -28,7 +28,7 @@ const styles = (theme: Theme) => ({
         marginTop: theme.spacing.unit * 2,
         marginBottom: theme.spacing.unit * 2,
         width: '100%',
-        maxHeight: '300px',
+        maxHeight: '600px',
         border: `1px solid ${theme.palette.grey[300]}`,
         padding: theme.spacing.unit,
         boxSizing: 'border-box',

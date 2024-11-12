@@ -43,14 +43,6 @@ class GraphPanels extends React.Component<GraphPanelsProps & GraphPanelsStyles, 
     const {classes, fetchingGraph, project, cypher} = this.props;
     const show = (
       <Grid container={true} spacing={0}>
-        <Grid item={true} xs={12} className={classes.leftPanel}>
-          {cypher.length > 0 &&
-          <RegularCard headerColor="blue" cardTitle="Cypher">
-            <h5>This natural language is translated as the SQL:</h5>
-            <code>{cypher}</code>
-          </RegularCard>
-          }
-        </Grid>
         <Grid item={true} xs={8} className={classes.leftPanel}>
           <ClickMenu project={project}/>
         </Grid>

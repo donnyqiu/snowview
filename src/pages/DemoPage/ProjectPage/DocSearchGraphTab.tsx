@@ -6,7 +6,7 @@ import { fetchGraphWorker } from '../../../redux/action';
 import { GRAPH_PREDEFINED_QUERIES } from '../../../config';
 import { RootState } from '../../../redux/reducer';
 import { RouteComponentProps } from 'react-router';
-import { LinearProgress, WithStyles } from 'material-ui';
+import { Grid, LinearProgress, WithStyles } from 'material-ui';
 import { container } from '../../../variables/styles';
 import withStyles from 'material-ui/styles/withStyles';
 import DocSearch from '../../../components/DocSearch';
@@ -41,17 +41,31 @@ class GraphTab extends React.Component<GraphTabProps & GraphTabStyles, {}> {
     const {query, fetching, classes} = this.props;
 
     return (
-      <div>
-        <DocSearch 
-          callback={(param: { query: string }) => fetchGraphWorker({project, query: param.query})} 
-        />
-        {fetching ?
-          <div className={classes.container}>
-            <LinearProgress/>
-          </div>  :
-          <GraphPanels project={project}/>
-        }
-      </div>
+      // <div>
+      //   <DocSearch 
+      //     callback={(param: { query: string }) => fetchGraphWorker({project, query: param.query})} 
+      //   />
+      //   {fetching ?
+      //     <div className={classes.container}>
+      //       <LinearProgress/>
+      //     </div>  :
+      //     <GraphPanels project={project}/>
+      //   }
+      // </div>
+
+      <Grid container spacing={24}>
+        <Grid item xs={4}> {/* xs={4} 表示在所有屏幕尺寸下占用4个栅格宽度 */}
+          <DocSearch 
+            callback={(param: { query: string }) => fetchGraphWorker({project, query: param.query})} 
+          />
+        </Grid>
+        <Grid item xs={8}> {/* xs={8} 表示在所有屏幕尺寸下占用8个栅格宽度 */}
+          {fetching ?
+            <LinearProgress/> :
+            <GraphPanels project={project}/>
+          }
+        </Grid>
+      </Grid>
     );
   }
 }
