@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Button, Input, Menu, MenuItem, withStyles, WithStyles } from 'material-ui';
+import { Button, withStyles, WithStyles } from 'material-ui';
 import { RootState } from '../redux/reducer';
 import { Dispatch } from 'redux';
 import { Theme } from 'material-ui/styles';
 import { ChangeEvent, MouseEvent, FormEvent } from 'react';
 import RegularCard from '../components/Cards/RegularCard';
-import P from './Typography/P';
 
 const styles = (theme: Theme) => ({
     container: {
@@ -35,12 +34,21 @@ const styles = (theme: Theme) => ({
             marginRight: theme.spacing.unit * 1,
         }
     },
+    textAreaForm: {
+        display: 'flex',
+        width: '100%',
+        justifyContent: 'center' as 'center',
+    },
+    textAreaWrapper: {
+        flex: '0 0 40%',
+        marginRight: theme.spacing.unit * 10,
+    },
     textArea: {
         marginTop: theme.spacing.unit * 2,
         marginBottom: theme.spacing.unit * 2,
         marginRight: theme.spacing.unit * 2,
         height: '400px',
-        width: '725px',
+        width: '100%',
         padding: theme.spacing.unit * 2,
         overflowY: 'auto' as 'auto',
         overflowX: 'hidden' as 'hidden',
@@ -65,7 +73,7 @@ const styles = (theme: Theme) => ({
         fontSize: '24px',
         lineHeight: '1.5',
         textAlign: 'center',
-        width: '725px',
+        width: '100%',
     }
 });
 
@@ -74,7 +82,7 @@ interface DocSearchProps {
     dispatch: Dispatch<RootState>;
 }
 
-type DocSearchStyles = WithStyles<'container' | 'form' | 'button' | 'textArea' | 'textAreaTitle'>;
+type DocSearchStyles = WithStyles<'container' | 'form' | 'button' | 'textAreaForm' | 'textAreaWrapper' | 'textArea' | 'textAreaTitle'>;
 
 interface DocSearchState {
     input: string;
@@ -152,9 +160,9 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
 
         return (
             <div className={classes.container}>
-                <RegularCard headerColor="blue" cardTitle="Markdown Viewer">
-                    <div className={classes.form}>
-                        <div>
+                <RegularCard headerColor="blue" cardTitle="File Viewer">
+                    <div className={classes.textAreaForm}>
+                        <div className={classes.textAreaWrapper}>
                             <h2 className={classes.textAreaTitle}>File Viewer ( Use the left mouse button to select text )</h2>
                             <div
                                 className={classes.textArea}
@@ -163,7 +171,7 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
                             >
                             </div>
                         </div>
-                        <div>
+                        <div className={classes.textAreaWrapper}>
                             <h2 className={classes.textAreaTitle}>Selected Text</h2>
                             <div
                                 className={classes.textArea}
