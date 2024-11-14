@@ -53,13 +53,13 @@ class GraphTab extends React.Component<GraphTabProps & GraphTabStyles, {}> {
       //   }
       // </div>
 
-      <Grid container spacing={24}>
-        <Grid item xs={4}> {/* xs={4} 表示在所有屏幕尺寸下占用4个栅格宽度 */}
+      <Grid container spacing={24} direction="column">
+        <Grid item xs={12}>
           <DocSearch 
             callback={(param: { query: string }) => fetchGraphWorker({project, query: param.query})} 
           />
         </Grid>
-        <Grid item xs={8}> {/* xs={8} 表示在所有屏幕尺寸下占用8个栅格宽度 */}
+        <Grid item xs={12}>
           {fetching ?
             <LinearProgress/> :
             <GraphPanels project={project}/>

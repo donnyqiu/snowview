@@ -8,7 +8,7 @@ export type AppStyle = WithStyles<AppStyleKeys>;
 
 const appStyle = () => ({
   mainPanel: {
-    width: `calc(100% - ${drawerWidth}px)`,
+    width: `100%`,
     overflow: 'auto',
     position: 'relative',
     float: 'right',
