@@ -23,6 +23,10 @@ const styles = () => ({
     wordWrap: 'break-word',
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
+  },
+  scrollableBody: {
+    height: '700px', 
+    overflowY: 'auto' as 'auto',
   }
 });
 
@@ -31,14 +35,18 @@ interface InformationPanelProps {
   nodes: NodesState;
 }
 
-class InformationPanel extends React.Component<InformationPanelProps & WithStyles<'normalCell'>, {}> {
+class InformationPanel extends React.Component<InformationPanelProps & WithStyles<'normalCell' | 'scrollableBody'>, {}> {
   render() {
     let body = null;
 
     const {classes, selectedNode, nodes} = this.props;
 
     if (selectedNode.isEmpty) {
-      body = <Typography component="p"> No entity selected. </Typography>;
+      body = (
+        <div className={classes.scrollableBody}> 
+          <Typography component="p"> No entity selected. </Typography>
+        </div>
+      );
     } else {
       const selected = nodes.get(selectedNode.get);
       if (selected.nonEmpty) {
@@ -75,14 +83,16 @@ class InformationPanel extends React.Component<InformationPanelProps & WithStyle
           return 10;
         });
         body = (
-          <Table>
-            <TableBody>
-              {properties.map(p => <TableRow key={p.key}>
-                <TableCell>{p.label}</TableCell>
-                <TableCell>{p.content}</TableCell>
-              </TableRow>)}
-            </TableBody>
-          </Table>
+          <div className={classes.scrollableBody}> {/* 添加这一层 */}
+            <Table>
+              <TableBody>
+                {properties.map(p => <TableRow key={p.key}>
+                  <TableCell>{p.label}</TableCell>
+                  <TableCell>{p.content}</TableCell>
+                </TableRow>)}
+              </TableBody>
+            </Table>
+          </div>
         );
       } else {
         body = <LinearProgress/>;
@@ -97,4 +107,4 @@ class InformationPanel extends React.Component<InformationPanelProps & WithStyle
   }
 }
 
-export default withStyles(styles)<{}>(connect(mapStateToProps)(InformationPanel));
+export default withStyles(styles)(connect(mapStateToProps)(InformationPanel));

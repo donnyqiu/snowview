@@ -39,7 +39,7 @@ const styles = (theme: Theme) => ({
         marginTop: theme.spacing.unit * 2,
         marginBottom: theme.spacing.unit * 2,
         padding: theme.spacing.unit * 2,
-        height: '400px',
+        height: '600px',
         width: '90%',
         overflowY: 'auto' as 'auto',
         overflowX: 'hidden' as 'hidden',
