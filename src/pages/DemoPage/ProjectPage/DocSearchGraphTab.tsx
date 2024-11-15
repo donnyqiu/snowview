@@ -53,7 +53,7 @@ class GraphTab extends React.Component<GraphTabProps & GraphTabStyles, {}> {
       //   }
       // </div>
 
-      <Grid container spacing={8}>
+      <Grid container spacing={0}>
         <Grid item xs={3}>
           <DocSearch 
             callback={(param: { query: string }) => fetchGraphWorker({project, query: param.query})} 

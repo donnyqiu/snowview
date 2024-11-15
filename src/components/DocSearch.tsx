@@ -9,8 +9,9 @@ import RegularCard from '../components/Cards/RegularCard';
 
 const styles = (theme: Theme) => ({
     container: {
-        margin: theme.spacing.unit * 2,
-        padding: theme.spacing.unit * 2,
+        paddingLeft: theme.spacing.unit * 2,
+        paddingTop: theme.spacing.unit * 4,
+        paddingBottom: theme.spacing.unit * 2,
     },
     form: {
         display: 'flex',
@@ -138,7 +139,7 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
 
         return (
             <div className={classes.container}>
-                <RegularCard headerColor="blue" cardTitle="File Viewer ( Use the Left Mouse Button to Select Text )">
+                <RegularCard headerColor="blue" cardTitle="File Viewer">
                     <div
                         className={classes.textArea}
                         onMouseUp={this.handleTextAreaSelect}

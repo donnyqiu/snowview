@@ -44,7 +44,9 @@ class GraphPanels extends React.Component<GraphPanelsProps & GraphPanelsStyles, 
     const show = (
       <Grid container={true} spacing={0}>
         <Grid item={true} xs={8} className={classes.leftPanel}>
-          <ClickMenu project={project}/>
+          <div className={classes.informationPanel}>
+            <ClickMenu project={project}/>
+          </div>
         </Grid>
         <Grid item={true} xs={4} className={classes.rightPanel}>
           {/* <FindEntityPanel project={project}/> */}
