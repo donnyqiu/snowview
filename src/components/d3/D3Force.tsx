@@ -70,9 +70,10 @@ class D3Force<N extends INode, R> extends React.Component<D3ForceProps<N, R>, D3
   svg: d3.Selection<SVGGElement, {}, HTMLElement, {}>;
 
   simulation: d3.Simulation<D3Node<N>, D3Relation<N, R>> = d3.forceSimulation<D3Node<N>>()
-    .force('charge', d3.forceManyBody().strength(-350).distanceMin(20).distanceMax(500))
+    // .force('charge', d3.forceManyBody().strength(-350).distanceMin(20).distanceMax(500))
     .force('collide', d3.forceCollide().radius(nodeRadius * 1.5).iterations(20))
-    .force('link', d3.forceLink());
+    .force('link', d3.forceLink())
+    .force('center', d3.forceCenter(100, 100));
 
   updateRelation = (rel: D3Relation<N, R>) => {
     const x1 = rel.source.x;
@@ -193,7 +194,7 @@ class D3Force<N extends INode, R> extends React.Component<D3ForceProps<N, R>, D3
       .links(this.links)
       .strength(0.05);
 
-    this.simulation.alpha(1).alphaDecay(0.005).velocityDecay(0.25).restart();
+    // this.simulation.alpha(1).alphaDecay(0.005).velocityDecay(0.25).restart();
   }
 
   render() {
