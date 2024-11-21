@@ -41,18 +41,6 @@ class GraphTab extends React.Component<GraphTabProps & GraphTabStyles, {}> {
     const {query, fetching, classes} = this.props;
 
     return (
-      // <div>
-      //   <DocSearch 
-      //     callback={(param: { query: string }) => fetchGraphWorker({project, query: param.query})} 
-      //   />
-      //   {fetching ?
-      //     <div className={classes.container}>
-      //       <LinearProgress/>
-      //     </div>  :
-      //     <GraphPanels project={project}/>
-      //   }
-      // </div>
-
       <Grid container spacing={0}>
         <Grid item xs={3}>
           <DocSearch 

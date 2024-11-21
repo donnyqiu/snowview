@@ -4,8 +4,9 @@ import { Button, withStyles, WithStyles } from 'material-ui';
 import { RootState } from '../redux/reducer';
 import { Dispatch } from 'redux';
 import { Theme } from 'material-ui/styles';
-import { ChangeEvent, MouseEvent, FormEvent } from 'react';
+import { ChangeEvent, MouseEvent } from 'react';
 import RegularCard from '../components/Cards/RegularCard';
+import { marked } from 'marked';
 
 const styles = (theme: Theme) => ({
     container: {
@@ -53,6 +54,12 @@ const styles = (theme: Theme) => ({
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
         fontSize: '12px',
         lineHeight: '2.0',
+        resize: 'none',
+        '& img': {
+            maxWidth: '100%',
+            height: 'auto',
+            display: 'block',
+        },
     }
 });
 
@@ -66,8 +73,10 @@ type DocSearchStyles = WithStyles<'container' | 'form' | 'button' | 'textArea'>;
 interface DocSearchState {
     input: string;
     anchorEl: HTMLElement | undefined;
-    documentText: string;
+    rawText: string;
+    renderedText: string;
     selectedText: string;
+    isEditMode: boolean;
 }
 
 class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSearchState> {
@@ -78,8 +87,10 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
         this.state = {
             input: '',
             anchorEl: undefined,
-            documentText: '',
+            rawText: '',
+            renderedText: '',
             selectedText: '',
+            isEditMode: true,
         };
     }
 
@@ -87,17 +98,47 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
         this.fileInputRef = ref;
     }
 
-    handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 if (e.target && typeof e.target.result === 'string') {
-                    this.setState({ documentText: e.target.result });
+                    this.setState({ rawText: e.target.result });
                 }
             };
             reader.readAsText(event.target.files[0]);
         }
     }
+
+    handleSave = () => {
+        const content = this.state.rawText;
+        const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'MarkdownFile.md';
+        document.body.appendChild(a);
+        a.click();
+
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    parseMarkdown = (markdown: string): string => {
+        const renderer = new marked.Renderer();
+
+        const options = {
+            renderer: renderer,
+            gfm: true,
+            breaks: false,
+            pedantic: false,
+            smartLists: true,
+            smartypants: false
+        };
+
+        return marked(markdown, options);
+    };
 
     handleUploadClick = () => {
         if (this.fileInputRef) {
@@ -105,14 +146,18 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
         }
     }
 
-    handleTextAreaSelect = (event: MouseEvent<HTMLDivElement>) => {
-        const selection = window.getSelection();
-        if (selection && !selection.isCollapsed) {
-            this.setState({
-                selectedText: selection.toString(),
-                anchorEl: event.currentTarget,
-            });
+    handleTextAreaSelect = (event: MouseEvent<HTMLTextAreaElement>) => {
+        const textArea = event.currentTarget;
+        if (textArea.selectionStart !== undefined && textArea.selectionEnd !== undefined) {
+            const start = textArea.selectionStart;
+            const end = textArea.selectionEnd;
+            const selectedText = textArea.value.substring(start, end);
+            this.setState({selectedText : selectedText});
         }
+    }
+
+    handleTextAreaChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+        this.setState({ rawText: event.target.value });
     }
 
     handleMenuClose = () => {
@@ -125,27 +170,35 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
         this.handleMenuClose();
     }
 
-    handleSelectWholeFile = () => {
-        this.setState({selectedText: this.state.documentText});
+    handleRenderClick = () => {
+        const renderedText = this.parseMarkdown(this.state.rawText);
+        this.setState({ renderedText : renderedText, isEditMode: false });
     }
 
-    handleDeleteSelectedText = () => {
-        this.setState({selectedText: ''});
+    handleEditModeClick = () => {
+        this.setState({ isEditMode: true });
     }
 
     render() {
         const { classes } = this.props;
-        const { documentText, selectedText } = this.state;
+        const { rawText, renderedText, selectedText, isEditMode } = this.state;
 
         return (
             <div className={classes.container}>
                 <RegularCard headerColor="blue" cardTitle="File Viewer">
-                    <div
-                        className={classes.textArea}
-                        onMouseUp={this.handleTextAreaSelect}
-                        dangerouslySetInnerHTML={{ __html: documentText }}
-                    >
-                    </div>
+                    {isEditMode ? (
+                        <textarea
+                            className={`${classes.textArea}`}
+                            value={rawText}
+                            onChange={this.handleTextAreaChange}
+                            onMouseUp={this.handleTextAreaSelect}
+                        ></textarea>
+                    ) : (
+                        <div
+                            className={`${classes.textArea}`}
+                            dangerouslySetInnerHTML={{ __html: renderedText }}
+                        />
+                    )}
 
                     <form className={classes.form} onSubmit={(e) => e.preventDefault()}>
                         <Button
@@ -165,16 +218,23 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
                         <Button
                             color="primary"
                             className={classes.button}
-                            onClick={this.handleSelectWholeFile}
+                            onClick={this.handleSave}
                         >
-                            Select All
+                            Save
+                        </Button>
+                        <Button
+                            color="primary"
+                            className={classes.button}
+                            onClick={isEditMode? this.handleRenderClick : this.handleEditModeClick}
+                        >
+                            {isEditMode ? 'Render' : 'Edit'}
                         </Button>
                         <input
                             ref={this.setFileInputRef}
                             type="file"
-                            accept=".md, .txt"
+                            accept=".md"
                             style={{ display: 'none' }}
-                            onChange={this.handleFileChange}
+                            onChange={this.handleFileUpload}
                         />
                     </form>
                 </RegularCard>
