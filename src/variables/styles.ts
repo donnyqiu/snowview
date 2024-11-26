@@ -38,7 +38,7 @@ const card = {
   borderRadius: '3px',
   color: 'rgba(0, 0, 0, 0.87)',
   background: '#fff',
-  height: '800px'
+  height: '850px'
 } as React.CSSProperties;
 
 const defaultFont = {

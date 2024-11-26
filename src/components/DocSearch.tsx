@@ -16,25 +16,22 @@ const styles = (theme: Theme) => ({
     },
     form: {
         display: 'flex',
+        flexWrap: 'wrap' as 'wrap',
         width: '100%',
         justifyContent: 'center' as 'center',
     },
     button: {
-        marginRight: theme.spacing.unit,
-        padding: theme.spacing.unit,
+        width: '40%',
+        marginRight: '5px',
+        marginTop: theme.spacing.unit * 1,
         textTransform: 'none',
         backgroundColor: '#26c6da',
         color: '#fff',
         fontSize: '16px',
         borderRadius: '8px',
-        boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-        transition: 'background-color 0.3s ease',
         '&:hover': {
             backgroundColor: '#0056b3',
         },
-        '& .MuiButton-startIcon': {
-            marginRight: theme.spacing.unit,
-        }
     },
     textArea: {
         marginTop: theme.spacing.unit * 2,
@@ -208,13 +205,7 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
                         >
                             Upload
                         </Button>
-                        <Button
-                            color="primary"
-                            className={classes.button}
-                            onClick={this.handleSearch}
-                        >
-                            Search
-                        </Button>
+                        
                         <Button
                             color="primary"
                             className={classes.button}
@@ -228,6 +219,14 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
                             onClick={isEditMode? this.handleRenderClick : this.handleEditModeClick}
                         >
                             {isEditMode ? 'Render' : 'Edit'}
+                        </Button>
+
+                        <Button
+                            color="primary"
+                            className={classes.button}
+                            onClick={this.handleSearch}
+                        >
+                            Search
                         </Button>
                         <input
                             ref={this.setFileInputRef}

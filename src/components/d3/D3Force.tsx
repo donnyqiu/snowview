@@ -163,7 +163,7 @@ class D3Force<N extends INode, R> extends React.Component<D3ForceProps<N, R>, D3
 
     this.svg = d3.select<SVGSVGElement, {}>(`#${this.props.id}`)
       .style('width', '100%')
-      .style('height', '800px')
+      .style('height', '700px')
       .call(d3.zoom().on('zoom', () => {
         let scale = d3.event.transform.k;
         const {x, y} = d3.event.transform;
