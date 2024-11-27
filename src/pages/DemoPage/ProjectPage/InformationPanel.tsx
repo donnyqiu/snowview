@@ -26,7 +26,7 @@ const styles = () => ({
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
   },
-  scrollableBody: {
+  code: {
     height: '700px', 
     overflowY: 'auto' as 'auto',
     overflowX: 'hidden' as 'hidden',
@@ -34,6 +34,11 @@ const styles = () => ({
     wordBreak: 'break-all',
     wordWrap: 'break-word',
     fontSize: '12px',
+  },
+  nodeDetail: {
+    height: '700px', 
+    overflowY: 'auto' as 'auto',
+    overflowX: 'hidden' as 'hidden',
   },
   button: {
     width: '100%',
@@ -60,8 +65,8 @@ interface InformationPanelState {
   isDetailsShown: boolean;
 }
 
-class InformationPanel extends React.Component<InformationPanelProps & WithStyles<'normalCell' | 'scrollableBody' | 'button'>, InformationPanelState> {
-  constructor(props: InformationPanelProps & WithStyles<'normalCell' | 'scrollableBody' | 'button'>) {
+class InformationPanel extends React.Component<InformationPanelProps & WithStyles<'normalCell' | 'code' | 'nodeDetail' | 'button'>, InformationPanelState> {
+  constructor(props: InformationPanelProps & WithStyles<'normalCell' | 'code' | 'nodeDetail' | 'button'>) {
     super(props);
     this.state = {
       isDetailsShown: false
@@ -80,12 +85,12 @@ class InformationPanel extends React.Component<InformationPanelProps & WithStyle
 
     if (!this.state.isDetailsShown) {
       body = (
-        <div className={classes.scrollableBody} dangerouslySetInnerHTML={{ __html: showCode }}/> 
+        <div className={classes.code} dangerouslySetInnerHTML={{ __html: showCode }}/> 
       );
     } else {
       if(selectedNode.isEmpty) {
         body = (
-          <Typography component="p" className={classes.scrollableBody}>No entities selected.</Typography>
+          <Typography component="p" className={classes.code}>No entities selected.</Typography>
         )
       } else {
         const selected = nodes.get(selectedNode.get);
@@ -123,7 +128,7 @@ class InformationPanel extends React.Component<InformationPanelProps & WithStyle
             return 10;
           });
           body = (
-            <div className={classes.scrollableBody}> {/* 添加这一层 */}
+            <div className={classes.nodeDetail}>
               <Table>
                 <TableBody>
                   {properties.map(p => <TableRow key={p.key}>
