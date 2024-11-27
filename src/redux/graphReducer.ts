@@ -3,7 +3,8 @@ import {
   addNodes, addRelations, addShownRelations,
   fetchGraph, fetchNode, fetchRelationList,
   removeNode,
-  selectNode, setCypher, showRelations
+  selectNode, setCypher, showRelations,
+  setGeneratedCode
 } from './action';
 import { combineReducers } from 'redux';
 import { Neo4jRelation, SnowNode, SnowRelation } from '../model';
@@ -26,6 +27,7 @@ export interface GraphState {
   nodes: NodesState;
   relations: RelationsState;
   relationLists: RelationListsState;
+  generatedCode: string;
 }
 
 function r2id(neo4jRelation: Neo4jRelation) {
@@ -99,6 +101,9 @@ const query = reducerWithInitialState<string>('')
 const cypher = reducerWithInitialState<string>('')
   .case(setCypher, (state, payload) => payload);
 
+const generatedCode = reducerWithInitialState<string>('')
+  .case(setGeneratedCode, (state, payload) => payload);
+
 export const graph = combineReducers({
-  fetching, selectedNode, query, cypher, nodes, relations, relationLists
+  fetching, selectedNode, query, cypher, nodes, relations, relationLists, generatedCode
 });

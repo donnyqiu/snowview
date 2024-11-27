@@ -2,6 +2,7 @@ export interface CypherQueryResult {
   cypher?: string;
   nodes: Neo4jNode[];
   relationships: Neo4jRelation[];
+  generatedCode: string;
 }
 
 export interface NavResult {

@@ -191,10 +191,7 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
                             onMouseUp={this.handleTextAreaSelect}
                         ></textarea>
                     ) : (
-                        <div
-                            className={`${classes.textArea}`}
-                            dangerouslySetInnerHTML={{ __html: renderedText }}
-                        />
+                        <div className={`${classes.textArea}`} dangerouslySetInnerHTML={{ __html: renderedText }}/>
                     )}
 
                     <form className={classes.form} onSubmit={(e) => e.preventDefault()}>
@@ -209,10 +206,11 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
                         <Button
                             color="primary"
                             className={classes.button}
-                            onClick={this.handleSave}
+                            onClick={this.handleSearch}
                         >
-                            Save
+                            Search
                         </Button>
+                        
                         <Button
                             color="primary"
                             className={classes.button}
@@ -224,10 +222,11 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
                         <Button
                             color="primary"
                             className={classes.button}
-                            onClick={this.handleSearch}
+                            onClick={this.handleSave}
                         >
-                            Search
+                            Save
                         </Button>
+
                         <input
                             ref={this.setFileInputRef}
                             type="file"

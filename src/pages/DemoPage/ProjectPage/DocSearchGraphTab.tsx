@@ -38,7 +38,7 @@ class GraphTab extends React.Component<GraphTabProps & GraphTabStyles, {}> {
 
   render() {
     const {project} = this.props.match.params;
-    const {query, fetching, classes} = this.props;
+    const {query, fetching} = this.props;
 
     return (
       <Grid container spacing={0}>

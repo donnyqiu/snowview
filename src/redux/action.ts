@@ -20,6 +20,7 @@ export const fetchDocumentResultWorker = bindThunkAction(
 );
 
 export const setCypher = actionCreator<string>('SET_CYPHER');
+export const setGeneratedCode = actionCreator<string>('SET_GENERATED_CODE');
 
 export const selectNode = actionCreator<number>('SELECT_NODE');
 export const removeNode = actionCreator<number>('REMOVE_NODE');
@@ -70,6 +71,7 @@ export const fetchGraphWorker = bindThunkAction(
     const cypher = result.cypher;
     const nodes = result.nodes;
     const relations = result.relationships;
+    const generatedCode = result.generatedCode;
 
     if (cypher && cypher.length > 0) {
       dispatch(setCypher(cypher));
@@ -78,5 +80,6 @@ export const fetchGraphWorker = bindThunkAction(
     }
     dispatch(addNodes(nodes));
     dispatch(addShownRelations(relations));
+    dispatch(setGeneratedCode(generatedCode));
     return {};
   });
