@@ -82,3 +82,7 @@ export interface ProjectInfo {
   name: string;
   description: string;
 }
+
+export interface CodeGenerationResult {
+  generatedCode: string;
+}

@@ -1,11 +1,11 @@
 import * as $ from 'jquery';
 import actionCreatorFactory from 'typescript-fsa';
 import bindThunkAction from 'typescript-fsa-redux-thunk';
-import { CypherQueryResult, DocumentResult, Neo4jRelation } from '../model';
+import { CypherQueryResult, DocumentResult, Neo4jRelation, CodeGenerationResult } from '../model';
 import { Neo4jNode } from '../model';
 import { RootState } from './reducer';
 import * as _ from 'lodash';
-import { CODE_SEARCH_URL, DOCUMENT_SEARCH_URL, NODE_INFO_URL, RELATION_LIST_URL } from '../config';
+import { CODE_SEARCH_URL, DOCUMENT_SEARCH_URL, NODE_INFO_URL, RELATION_LIST_URL, CODE_GENERATION_URL } from '../config';
 
 const actionCreator = actionCreatorFactory();
 
@@ -71,7 +71,6 @@ export const fetchGraphWorker = bindThunkAction(
     const cypher = result.cypher;
     const nodes = result.nodes;
     const relations = result.relationships;
-    const generatedCode = result.generatedCode;
 
     if (cypher && cypher.length > 0) {
       dispatch(setCypher(cypher));
@@ -80,6 +79,16 @@ export const fetchGraphWorker = bindThunkAction(
     }
     dispatch(addNodes(nodes));
     dispatch(addShownRelations(relations));
+    return {};
+  });
+
+
+export const generateCode = actionCreator.async<{ids: string}, {}>('GENERATE_CODE');
+export const generateCodeWorker = bindThunkAction(
+  generateCode,
+  async (params, dispatch) => {
+    const result: CodeGenerationResult = await $.post(CODE_GENERATION_URL, params);
+    const generatedCode = result.generatedCode;
     dispatch(setGeneratedCode(generatedCode));
     return {};
   });

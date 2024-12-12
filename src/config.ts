@@ -5,6 +5,7 @@ export const CODE_SEARCH_URL = `${SERVER_URL}/codeSearch`;
 export const NODE_INFO_URL = `${SERVER_URL}/node`;
 export const RELATION_LIST_URL = `${SERVER_URL}/relationList`;
 export const NAV_URL = `${SERVER_URL}/nav`;
+export const CODE_GENERATION_URL = `${SERVER_URL}/codeGeneration`
 
 export const DOC_PREDEFINED_QUERIES = [
   'How to write a document into an index?',

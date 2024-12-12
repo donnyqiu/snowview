@@ -9,6 +9,7 @@ import { NodesState, RelationsState } from '../../../redux/graphReducer';
 import { fetchRelationListWorker, selectNode } from '../../../redux/action';
 import { name2color } from '../../../utils/utils';
 import RegularCard from '../../../components/Cards/RegularCard';
+import { Button, withStyles, WithStyles } from 'material-ui';
 
 const mapStateToProps = (state: RootState) => ({
   nodes: state.graph.nodes,
@@ -22,6 +23,7 @@ interface GraphPanelProps {
   selectedNode: Option<number>;
   dispatch: Dispatch<RootState>;
   project: string;
+  callback: Function;
 }
 
 class Graph extends D3Force<SnowNode, SnowRelation> {
@@ -29,7 +31,37 @@ class Graph extends D3Force<SnowNode, SnowRelation> {
 
 class GraphPanel extends React.Component<GraphPanelProps, {}> {
 
+  handleGenerate = () => {
+      const { dispatch, callback, nodes } = this.props;
+      const idArray: number[] = [];
+      nodes.forEach((node, key) => {
+        if(node?.exists && node.get.shown === true && key !== undefined) {
+          idArray.push(key);
+        }
+      });
+      const ids: string = JSON.stringify(idArray);
+      dispatch(callback({ ids: ids }));
+  }
+
   render() {
+    const buttonStyle = {
+        width: '40%',
+        marginRight: '5px',
+        marginTop: '5px',
+        textTransform: 'none',
+        backgroundColor: '#26c6da',
+        color: '#fff',
+        fontSize: '16px',
+        borderRadius: '8px',
+        '&:hover': {
+            backgroundColor: '#0056b3',
+        },
+    };
+    const containerStyle = {
+      display: 'flex',
+      justifyContent: 'center' as 'center',
+    };
+
     const {dispatch, selectedNode, project} = this.props;
 
     const nodes = this.props.nodes
@@ -47,8 +79,6 @@ class GraphPanel extends React.Component<GraphPanelProps, {}> {
 
     return (
       <RegularCard headerColor="blue" cardTitle="Knowledge Graph Inference Result">
-        {this.props.nodes.isEmpty() ?
-          '' :
           <Graph
             id="neo4jd3"
             highlight={selectedNode}
@@ -74,7 +104,17 @@ class GraphPanel extends React.Component<GraphPanelProps, {}> {
               dispatch(fetchRelationListWorker({project, id: parseInt(id, 10)}));
               dispatch(selectNode(parseInt(id, 10)));
             }}
-          />}
+          />
+
+          <div style={containerStyle}>
+            <Button
+              color="primary"
+              onClick={this.handleGenerate}
+              style={buttonStyle}
+            >
+              Generate Code
+            </Button>
+          </div>
       </RegularCard>
     );
   }

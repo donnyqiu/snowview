@@ -69,7 +69,7 @@ class InformationPanel extends React.Component<InformationPanelProps & WithStyle
   constructor(props: InformationPanelProps & WithStyles<'normalCell' | 'code' | 'nodeDetail' | 'button'>) {
     super(props);
     this.state = {
-      isDetailsShown: false
+      isDetailsShown: true
     };
   }
 

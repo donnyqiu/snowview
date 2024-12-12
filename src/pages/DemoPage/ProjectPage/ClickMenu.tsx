@@ -1,19 +1,13 @@
 import * as React from 'react';
-import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/reducer';
 import { Dispatch } from 'redux';
 import { Option } from 'ts-option';
 import _ from 'lodash';
-import { fetchNodeWorker, removeNode, showRelations } from '../../../redux/action';
-import { RelationListsState, RelationsState } from '../../../redux/graphReducer';
+import { removeNode } from '../../../redux/action';
+import { RelationListsState, RelationsState, NodesState } from '../../../redux/graphReducer';
 import GraphPanel from './GraphPanel';
-import { Chance } from 'chance';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, withStyles, WithStyles } from 'material-ui';
-import Select from 'material-ui/Select';
-import Input from 'material-ui/Input';
-
-const chance  = new Chance();
+import { generateCodeWorker } from '../../../redux/action';
 
 const mapStateToProps = (state: RootState) => ({
     selectedNode: state.graph.selectedNode,
@@ -32,124 +26,71 @@ interface MenuProps {
 class ClickMenu extends React.Component<MenuProps, {}> {
     input: HTMLInputElement;
     state = {
-        visible: false
+        visible: false,
+        menuX: 0,
+        menuY: 0
     };
     inputdata: HTMLInputElement;
 
-    showDialog = () => {
-        this.setState({
-            visible: true
-        });
-    }
-
-    handleOk = () => {
-        const { dispatch, selectedNode, relationLists, relations, project } = this.props;
-        if (selectedNode.isEmpty)  {
-            return;
-        }
-        
-        this.setState({
-            visible: false
-        });
-        const catalog = this.input.value;
-
-        const relationList = relationLists.get(selectedNode.get);
-
-        const rels = relationList.get
-        .map(x => relations.get(x))
-        .filter(x => !x.shown)
-        .filter(x => x.types.some(t => t === catalog));
-    
-        const readyToShow = rels.length > 0 ? chance.pickset(rels, parseInt(this.inputdata.value)) : [];
-
-        readyToShow.forEach(r => {
-        const source = r.source, target = r.target;
-        const otherID = source === selectedNode.get ? target : source;
-        dispatch(fetchNodeWorker({ project, id: otherID }));
-        });
-
-        dispatch(showRelations(readyToShow.map(x => x.id)));
-    }
-
-    handleCancel = () => {
-        this.setState({
-          visible: false
-        });
-    }
-
-    handleClick = () => {
+    handleHide = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
         const { dispatch, selectedNode } = this.props;
         if (selectedNode.nonEmpty) {
             const selected = selectedNode.get;
             dispatch(removeNode(selected));
         }
+        this.setState({ visible: false });
+    }
+
+    handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault();
+
+        this.setState({
+            visible: true,
+            menuX: event.clientX + window.scrollX, 
+            menuY: event.clientY + window.scrollY 
+        });
+    }
+
+    handleClickOutside = (event: MouseEvent) => {
+        const menuElement = document.querySelector('.context-menu') as HTMLElement | null;
+        if (this.state.visible && menuElement && !menuElement.contains(event.target as Node)) {
+            this.setState({ visible: false });
+        }
+    }
+
+    componentDidMount() {
+        document.addEventListener('click', this.handleClickOutside, true);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('click', this.handleClickOutside, true);
     }
     
 	render() {
-        const { selectedNode, relationLists, relations } = this.props;
-
         return (
             <div className="bg">
-                <Dialog aria-labelledby="customized-dialog-title" open={this.state.visible}>
-                    <DialogTitle id="customized-dialog-title">
-                    EXPAND
-                    </DialogTitle>
-                    <DialogContent>
-                        Relation Type:&emsp;
-                        <Select
-                            native={true}
-                            input={<Input id="relation-type" inputRef={(input: HTMLInputElement) => this.input = input} />}
-                        >
-                            {selectedNode.isEmpty
-                                ? null
-                                : (relationLists.get(selectedNode.get).isEmpty ?
-                                    null : _.chain(relationLists.get(selectedNode.get).get)
-                                    .flatMap(x => relations.get(x).types)
-                                    .uniq()
-                                    .value()
-                                    .map(t => <option key={t} value={t}>{t}</option>))
-                            }
-                        </Select>
-                        <br/>
-                        <br/>Max Number:&emsp;
-                        <Input
-                            type="text"
-                            defaultValue={'5'}
-                            inputRef={(val: HTMLInputElement) => (this.inputdata = val)}
-                            placeholder="Max Number"
-                            style={{ width: 100 }}
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button autoFocus onClick={this.handleCancel} color="primary">
-                            Cancel
-                        </Button>
-                        <Button autoFocus onClick={this.handleOk} color="primary">
-                            OK
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-                <ContextMenuTrigger id="add_same_id">
-                    <div className="hight">
-                        <GraphPanel project={this.props.project}/>
-                    </div>
-                </ContextMenuTrigger>
-                <ContextMenu 
-                    id="add_same_id"
-                    style={{padding: '15px', backgroundColor: 'white', border: '1px solid lightgray'}}
+                <div className="hight"
+                    onContextMenu={this.handleContextMenu}
                 >
-                    <MenuItem
-                        onClick={this.showDialog}
+                    <GraphPanel project={this.props.project} callback={(param: { ids: string }) => generateCodeWorker({ids: param.ids})}/>
+                </div>
+
+                {this.state.visible && (
+                    <div
+                        className="context-menu"
+                        style={{
+                            position: 'absolute',
+                            top: this.state.menuY,
+                            left: this.state.menuX,
+                            width: '100px',
+                        }}
                     >
-                        <strong>expand</strong>
-                    </MenuItem>
-                    <div style={{border: '1px solid #CCC'}}/>
-                    <MenuItem
-                        onClick={this.handleClick}
-                    >
-                        <strong>hide</strong>
-                    </MenuItem>
-                </ContextMenu>
+                        <button onClick={this.handleHide} style={{ width: '100%' , background: '#fff'}}>
+                            Hide
+                        </button>
+                    </div>
+                )}
             </div>
         );
     }

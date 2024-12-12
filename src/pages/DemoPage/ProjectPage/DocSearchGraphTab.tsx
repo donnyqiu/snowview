@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import SearchForm from '../../../components/SearchForm';
 import GraphPanels from './GraphPanels';
 import { fetchGraphWorker } from '../../../redux/action';
-import { GRAPH_PREDEFINED_QUERIES } from '../../../config';
 import { RootState } from '../../../redux/reducer';
 import { RouteComponentProps } from 'react-router';
 import { Grid, LinearProgress, WithStyles } from 'material-ui';
