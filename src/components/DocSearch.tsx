@@ -185,6 +185,7 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
                 <RegularCard headerColor="blue" cardTitle="File Viewer">
                     {isEditMode ? (
                         <textarea
+                            spellCheck={false}
                             className={`${classes.textArea}`}
                             value={rawText}
                             onChange={this.handleTextAreaChange}

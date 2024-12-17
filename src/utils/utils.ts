@@ -69,6 +69,15 @@ export function name2color(name: string): string {
   if (name === 'ConfigItem') {
     return '#78ea58'
   }
+  if (name === 'JavaClass') {
+    return '#00BFFF';
+  }
+  if (name === 'JavaMethod') {
+    return '#FFA500';
+  }
+  if (name === 'JavaField') {
+    return '#DDA0DD';
+  }
   const h = colorHash(name) % 360;
   return Math.ceil(h / 30) % 2 === 0 ?
     hsl(h, 1, 0.8).rgb().toString() :

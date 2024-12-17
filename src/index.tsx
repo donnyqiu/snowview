@@ -9,9 +9,18 @@ import { appReducer } from './redux/reducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import 'typeface-roboto';
 import { BrowserRouter } from 'react-router-dom';
+import $ from "jquery"
 
 require('../node_modules/js-snackbar/dist/snackbar.css');
 require('./assets/css/snowgraph.css');
+
+// 全局配置 AJAX
+$.ajaxSetup({
+  xhrFields: {
+    withCredentials: true, // 确保发送 Cookie
+  },
+  crossDomain: true, // 告诉 jQuery 这是跨域请求
+});
 
 const store = createStore(appReducer, composeWithDevTools(applyMiddleware(thunk)));
 
