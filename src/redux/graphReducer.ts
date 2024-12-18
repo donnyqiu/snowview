@@ -4,7 +4,7 @@ import {
   fetchGraph, fetchNode, fetchRelationList,
   removeNode,
   selectNode, setCypher, showRelations,
-  setGeneratedCode
+  setGeneratedCode, changeNodesShown
 } from './action';
 import { combineReducers } from 'redux';
 import { Neo4jRelation, SnowNode, SnowRelation } from '../model';
@@ -28,6 +28,7 @@ export interface GraphState {
   relations: RelationsState;
   relationLists: RelationListsState;
   generatedCode: string;
+  nodesShown: boolean;
 }
 
 function r2id(neo4jRelation: Neo4jRelation) {
@@ -37,7 +38,7 @@ function r2id(neo4jRelation: Neo4jRelation) {
 const fetching = reducerWithInitialState<boolean>(false)
   .case(fetchGraph.started, () => true)
   .case(fetchGraph.done, () => false)
-  .case(fetchGraph.failed, () => withError('Failed to execute CypherQuery', false));
+  .case(fetchGraph.failed, () => withError('Failed to search', false));
 
 const selectedNode = reducerWithInitialState<Option<number>>(none)
   .case(fetchGraph.started, () => none)
@@ -104,6 +105,9 @@ const cypher = reducerWithInitialState<string>('')
 const generatedCode = reducerWithInitialState<string>('')
   .case(setGeneratedCode, (state, payload) => payload);
 
+const nodesShown = reducerWithInitialState<boolean>(true)
+  .case(changeNodesShown, (state) => !state);
+
 export const graph = combineReducers({
-  fetching, selectedNode, query, cypher, nodes, relations, relationLists, generatedCode
+  fetching, selectedNode, query, cypher, nodes, relations, relationLists, generatedCode, nodesShown
 });

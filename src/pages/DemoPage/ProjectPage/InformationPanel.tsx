@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import {
   LinearProgress, Table, TableBody, TableCell, TableRow, Typography, WithStyles, Button
 } from 'material-ui';
+import { Dispatch } from 'redux';
 import withStyles from 'material-ui/styles/withStyles';
 import { Option } from 'ts-option';
 import * as _ from 'lodash';
@@ -16,7 +17,8 @@ const mapStateToProps = (state: RootState) => {
   return {
     selectedNode: state.graph.selectedNode,
     nodes: state.graph.nodes,
-    generatedCode: state.graph.generatedCode
+    generatedCode: state.graph.generatedCode,
+    nodesShown: state.graph.nodesShown
   };
 };
 
@@ -53,44 +55,47 @@ const styles = () => ({
         backgroundColor: '#0056b3',
     },
   },
+  notice: {
+    height: '700px', 
+    overflowY: 'auto' as 'auto',
+    overflowX: 'hidden' as 'hidden',
+    whiteSpace: 'pre-wrap',
+    wordBreak: 'break-all',
+    wordWrap: 'break-word',
+    fontSize: '20px',
+    textAlign: 'center'
+  },
 });
 
 interface InformationPanelProps {
   selectedNode: Option<number>;
   nodes: NodesState;
   generatedCode: string;
+  nodesShown: boolean;
 }
 
-interface InformationPanelState {
-  isDetailsShown: boolean;
-}
 
-class InformationPanel extends React.Component<InformationPanelProps & WithStyles<'normalCell' | 'code' | 'nodeDetail' | 'button'>, InformationPanelState> {
-  constructor(props: InformationPanelProps & WithStyles<'normalCell' | 'code' | 'nodeDetail' | 'button'>) {
-    super(props);
-    this.state = {
-      isDetailsShown: true
-    };
-  }
-
-  handleDetailsShown = () => {
-    this.setState(prevState => ({ isDetailsShown: !prevState.isDetailsShown }));
-  };
-
+class InformationPanel extends React.Component<InformationPanelProps & WithStyles<'normalCell' | 'code' | 'nodeDetail' | 'button' | 'notice'>> {
   render() {
     let body = null;
 
-    const {classes, selectedNode, nodes, generatedCode} = this.props;
+    const {classes, selectedNode, nodes, generatedCode, nodesShown} = this.props;
     const showCode = Prism.highlight(generatedCode, Prism.languages.javascript);
 
-    if (!this.state.isDetailsShown) {
-      body = (
-        <div className={classes.code} dangerouslySetInnerHTML={{ __html: showCode }}/> 
-      );
+    if (!nodesShown) {
+      if(showCode === '') {
+        body = (
+          <Typography component="p" className={classes.notice}>无生成代码</Typography>
+        )
+      } else {
+        body = (
+          <div className={classes.code} dangerouslySetInnerHTML={{ __html: showCode }}/> 
+        );
+      }
     } else {
       if(selectedNode.isEmpty) {
         body = (
-          <Typography component="p" className={classes.code}>No entities selected.</Typography>
+          <Typography component="p" className={classes.notice}>无选中节点</Typography>
         )
       } else {
         const selected = nodes.get(selectedNode.get);
@@ -146,11 +151,8 @@ class InformationPanel extends React.Component<InformationPanelProps & WithStyle
     }
 
     return (
-      <RegularCard headerColor="blue" cardTitle={this.state.isDetailsShown ? "Node Details" : "Generated Code"}>
+      <RegularCard headerColor="blue" cardTitle={nodesShown ? "节点详情" : "生成的代码"}>
         {body}
-        <Button color="primary" onClick={this.handleDetailsShown} className={classes.button}>
-          {this.state.isDetailsShown ? 'Show Generated Code' : 'Show Node Details'}
-        </Button>
       </RegularCard>
     );
   }

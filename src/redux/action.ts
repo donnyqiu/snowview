@@ -92,3 +92,11 @@ export const generateCodeWorker = bindThunkAction(
     dispatch(setGeneratedCode(generatedCode));
     return {};
   });
+
+export const changeNodesShown = actionCreator('CHANGE_NODES_SHOWN');
+export const changeShownStatus = actionCreator.async<{status: boolean}, void>('CHANGE_NODES_SHOWN_STATUS');
+export const changeShownStatusWorker = bindThunkAction(
+  changeShownStatus,
+  async (params, dispatch) => {
+    dispatch(changeNodesShown());
+  });

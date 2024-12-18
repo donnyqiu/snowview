@@ -182,7 +182,7 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
 
         return (
             <div className={classes.container}>
-                <RegularCard headerColor="blue" cardTitle="File Viewer">
+                <RegularCard headerColor="blue" cardTitle="Markdown文件查看器">
                     {isEditMode ? (
                         <textarea
                             spellCheck={false}
@@ -201,7 +201,7 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
                             className={classes.button}
                             onClick={this.handleUploadClick}
                         >
-                            Upload
+                            上传
                         </Button>
                         
                         <Button
@@ -209,7 +209,7 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
                             className={classes.button}
                             onClick={this.handleSearch}
                         >
-                            Search
+                            搜索
                         </Button>
                         
                         <Button
@@ -217,7 +217,7 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
                             className={classes.button}
                             onClick={isEditMode? this.handleRenderClick : this.handleEditModeClick}
                         >
-                            {isEditMode ? 'Render' : 'Edit'}
+                            {isEditMode ? '渲染' : '编辑'}
                         </Button>
 
                         <Button
@@ -225,7 +225,7 @@ class DocSearch extends React.Component<DocSearchProps & DocSearchStyles, DocSea
                             className={classes.button}
                             onClick={this.handleSave}
                         >
-                            Save
+                            保存
                         </Button>
 
                         <input

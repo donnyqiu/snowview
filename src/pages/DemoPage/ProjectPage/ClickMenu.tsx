@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { removeNode } from '../../../redux/action';
 import { RelationListsState, RelationsState, NodesState } from '../../../redux/graphReducer';
 import GraphPanel from './GraphPanel';
-import { generateCodeWorker } from '../../../redux/action';
+import { generateCodeWorker, changeShownStatusWorker } from '../../../redux/action';
 
 const mapStateToProps = (state: RootState) => ({
     selectedNode: state.graph.selectedNode,
@@ -73,7 +73,10 @@ class ClickMenu extends React.Component<MenuProps, {}> {
                 <div className="hight"
                     onContextMenu={this.handleContextMenu}
                 >
-                    <GraphPanel project={this.props.project} callback={(param: { ids: string }) => generateCodeWorker({ids: param.ids})}/>
+                    <GraphPanel project={this.props.project} 
+                    generateCallback={(param: { ids: string }) => generateCodeWorker({ids: param.ids})}
+                    changeStatusCallback={(param: { status: boolean }) => changeShownStatusWorker({status: param.status})}
+                    />
                 </div>
 
                 {this.state.visible && (

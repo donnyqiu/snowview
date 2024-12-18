@@ -14,7 +14,8 @@ import { Button, withStyles, WithStyles } from 'material-ui';
 const mapStateToProps = (state: RootState) => ({
   nodes: state.graph.nodes,
   relations: state.graph.relations,
-  selectedNode: state.graph.selectedNode
+  selectedNode: state.graph.selectedNode,
+  nodesShown: state.graph.nodesShown
 });
 
 interface GraphPanelProps {
@@ -23,7 +24,9 @@ interface GraphPanelProps {
   selectedNode: Option<number>;
   dispatch: Dispatch<RootState>;
   project: string;
-  callback: Function;
+  generateCallback: Function;
+  changeStatusCallback: Function;
+  nodesShown: boolean;
 }
 
 class Graph extends D3Force<SnowNode, SnowRelation> {
@@ -32,7 +35,7 @@ class Graph extends D3Force<SnowNode, SnowRelation> {
 class GraphPanel extends React.Component<GraphPanelProps, {}> {
 
   handleGenerate = () => {
-      const { dispatch, callback, nodes } = this.props;
+      const { dispatch, generateCallback, nodes } = this.props;
       const idArray: number[] = [];
       nodes.forEach((node, key) => {
         if(node?.exists && node.get.shown === true && key !== undefined) {
@@ -40,12 +43,17 @@ class GraphPanel extends React.Component<GraphPanelProps, {}> {
         }
       });
       const ids: string = JSON.stringify(idArray);
-      dispatch(callback({ ids: ids }));
+      dispatch(generateCallback({ ids: ids }));
+  }
+
+  handleChangeStatus = () => {
+    const { dispatch, changeStatusCallback } = this.props;
+    dispatch(changeStatusCallback(true));
   }
 
   render() {
     const buttonStyle = {
-        width: '40%',
+        width: '20%',
         marginRight: '5px',
         marginTop: '5px',
         textTransform: 'none',
@@ -62,7 +70,7 @@ class GraphPanel extends React.Component<GraphPanelProps, {}> {
       justifyContent: 'center' as 'center',
     };
 
-    const {dispatch, selectedNode, project} = this.props;
+    const {dispatch, selectedNode, project, nodesShown} = this.props;
 
     const nodes = this.props.nodes
       .valueSeq()
@@ -78,7 +86,7 @@ class GraphPanel extends React.Component<GraphPanelProps, {}> {
       .toArray();
 
     return (
-      <RegularCard headerColor="blue" cardTitle="Knowledge Graph Inference Result">
+      <RegularCard headerColor="blue" cardTitle="知识图谱">
           <Graph
             id="neo4jd3"
             highlight={selectedNode}
@@ -112,7 +120,15 @@ class GraphPanel extends React.Component<GraphPanelProps, {}> {
               onClick={this.handleGenerate}
               style={buttonStyle}
             >
-              Generate Code
+              生成代码
+            </Button>
+
+            <Button
+              color="primary"
+              onClick={this.handleChangeStatus}
+              style={buttonStyle}
+            >
+              {nodesShown ? "显示生成的代码" : "显示选中的节点"}
             </Button>
           </div>
       </RegularCard>
