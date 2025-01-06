@@ -59,8 +59,8 @@ class D3ForceNode extends React.Component<D3ForceNodeProps, {}> {
                     strokeWidth={highlight ? 3 : 0}
                     stroke="black"
                 />
-                <text textAnchor="middle" x={0} y={-5} fontWeight="bold">{label}</text>
-                <text textAnchor="middle" x={0} y={15}>{text}</text>
+                {/* <text textAnchor="middle" x={0} y={-5} fontWeight="bold">{label}</text> */}
+                <text textAnchor="middle" x={0} y={2} fontWeight="bold">{text}</text>
             </g>
         );
     }

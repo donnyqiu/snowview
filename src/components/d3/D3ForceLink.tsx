@@ -60,7 +60,7 @@ class D3ForceLink extends React.Component<D3ForceLinkProps, {}> {
                     markerStart={markerStart}
                     markerEnd={markerEnd}
                 />
-                <text transform="translate(0,-2)" className="link-label" textAnchor="middle">
+                <text transform="translate(0,-10)" className="link-label" textAnchor="middle">
                     <textPath xlinkHref={`#p${id}`} startOffset="50%">
                         {text}
                     </textPath>

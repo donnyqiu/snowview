@@ -65,15 +65,59 @@ class D3Force<N extends INode, R> extends React.Component<D3ForceProps<N, R>, D3
 
   links: D3Relation<N, R>[] = [];
 
+  connectedComponents: Map<string, number> = new Map();
+
   canvas: SVGGElement | null;
 
   svg: d3.Selection<SVGGElement, {}, HTMLElement, {}>;
 
+  calculateConnectedComponents(nodes: D3Node<N>[], links: D3Relation<N, R>[]): void {
+    const adjacencyList = new Map<string, Set<string>>();
+    links.forEach(link => {
+      if (!adjacencyList.has(link.source.raw.getID())) adjacencyList.set(link.source.raw.getID(), new Set());
+      if (!adjacencyList.has(link.target.raw.getID())) adjacencyList.set(link.target.raw.getID(), new Set());
+
+      adjacencyList.get(link.source.raw.getID())!.add(link.target.raw.getID());
+      adjacencyList.get(link.target.raw.getID())!.add(link.source.raw.getID());
+    });
+
+    const visited = new Set<string>();
+    const componentMap = new Map<string, number>();
+    let componentId = 0;
+
+    function bfs(startNodeId: string) {
+      const queue = [startNodeId];
+      while (queue.length > 0) {
+        const nodeId = queue.shift()!;
+        if (!visited.has(nodeId)) {
+          visited.add(nodeId);
+          componentMap.set(nodeId, componentId);
+
+          const neighbors = adjacencyList.get(nodeId);
+          if (neighbors) {
+            for (let neighbor of neighbors) {
+              if (!visited.has(neighbor)) {
+                queue.push(neighbor);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    nodes.forEach(node => {
+      if (!visited.has(node.raw.getID())) {
+        bfs(node.raw.getID());
+        componentId++;
+      }
+    });
+    
+    this.connectedComponents = componentMap;
+  }
+
   simulation: d3.Simulation<D3Node<N>, D3Relation<N, R>> = d3.forceSimulation<D3Node<N>>()
-    // .force('charge', d3.forceManyBody().strength(-350).distanceMin(20).distanceMax(500))
-    .force('collide', d3.forceCollide().radius(nodeRadius * 1.5).iterations(20))
-    .force('link', d3.forceLink())
-    .force('center', d3.forceCenter(100, 100));
+    .force('collide', d3.forceCollide().radius(nodeRadius * 2).iterations(20))
+    .force('center', d3.forceCenter(50, 50));
 
   updateRelation = (rel: D3Relation<N, R>) => {
     const x1 = rel.source.x;
@@ -129,7 +173,7 @@ class D3Force<N extends INode, R> extends React.Component<D3ForceProps<N, R>, D3
     this.setState({
       nodes: newNode
     });
-    this.simulation.alpha(1).alphaDecay(0.005).velocityDecay(0.25).restart();
+    this.simulation.alpha(1).alphaDecay(0.05).velocityDecay(0.5).restart();
   }
 
   dblClick = (node: D3ForceNode) => {
@@ -142,13 +186,32 @@ class D3Force<N extends INode, R> extends React.Component<D3ForceProps<N, R>, D3
     });
   }
 
+  calculateCustomCharge = (nodeA: D3Node<N>, nodeB: D3Node<N>): number => {
+    const componentMap = this.connectedComponents;
+    const compA = componentMap.get(nodeA.raw.getID());
+    const compB = componentMap.get(nodeB.raw.getID());
+
+    if (compA === undefined || compB === undefined) {
+      return -10;
+    }
+
+    if (compA != compB) {
+      return -80;
+    }
+
+    return -10;
+  }
+
   componentDidMount() {
-    this.simulation.force('link', d3.forceLink().id((d: D3Node<N>) => d.raw.getID()));
+    this.simulation.force('charge', d3.forceManyBody().strength(-10));
+    this.simulation.force('link', d3.forceLink().id((d: D3Node<N>) => d.raw.getID()).distance(150));
 
     this.updateNodes(this.props);
 
     this.updateLinks(this.props);
 
+    this.calculateConnectedComponents(this.nodes, this.links);
+    
     this.simulation.nodes(this.nodes);
 
     this.simulation.on('tick', () => {
@@ -163,7 +226,7 @@ class D3Force<N extends INode, R> extends React.Component<D3ForceProps<N, R>, D3
 
     this.svg = d3.select<SVGSVGElement, {}>(`#${this.props.id}`)
       .style('width', '100%')
-      .style('height', '700px')
+      .style('height', '600px')
       .call(d3.zoom().on('zoom', () => {
         let scale = d3.event.transform.k;
         const {x, y} = d3.event.transform;
@@ -177,7 +240,8 @@ class D3Force<N extends INode, R> extends React.Component<D3ForceProps<N, R>, D3
 
     this.simulation.force<ForceLink<D3Node<N>, D3Relation<N, R>>>('link')!
       .links(this.links)
-      .strength(0.1);
+      .strength(0.1)
+      .distance(300);
 
     this.simulation.restart();
 
@@ -194,7 +258,7 @@ class D3Force<N extends INode, R> extends React.Component<D3ForceProps<N, R>, D3
       .links(this.links)
       .strength(0.05);
 
-    // this.simulation.alpha(1).alphaDecay(0.005).velocityDecay(0.25).restart();
+    this.simulation.alpha(1).alphaDecay(0.05).velocityDecay(0.5).restart();
   }
 
   render() {
@@ -205,8 +269,23 @@ class D3Force<N extends INode, R> extends React.Component<D3ForceProps<N, R>, D3
     const up = half - arrowSize / 2;
     const down = half + arrowSize / 2;
 
+    const legendItems = [
+      { color: '#00BFFF', label: 'JavaClass' },
+      { color: '#FFA500', label: 'JavaMethod' },
+      { color: '#DDA0DD', label: 'JavaField' }
+    ];
+
     return (
       <div style={{width: '100%'}}>
+        <div style={{padding: '10px'}}>
+          {legendItems.map((item, index) => (
+            <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ width: '20px', height: '20px', backgroundColor: item.color, marginRight: '8px'}}></div>
+              <span style={{fontSize: '12px'}}>{item.label}</span>
+            </div>
+          ))}
+        </div>
+
         <svg viewBox="-400,-400,800,800" id={this.props.id}>
           <defs>
             <marker

@@ -57,10 +57,15 @@ export class SnowNode implements INode {
   getID(): string {
     return this.node.id.toString();
   }
+
+  getLabel(): string {
+    return this.node.label.toString();
+  }
 }
 
 export interface INode {
   getID(): string;
+  getLabel(): string;
 }
 
 export interface DocumentProperty {

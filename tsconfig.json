@@ -3,7 +3,7 @@
     "outDir": "build/dist",
     "module": "esnext",
     "target": "es6",
-    "lib": ["es6", "dom"],
+    "lib": ["es2017", "dom"],
     "sourceMap": true,
     "allowJs": true,
     "experimentalDecorators": true,
