@@ -1,8 +1,5 @@
 import * as React from 'react';
-import QueryTab from './GraphTab';
-import Tabs, { Tab } from 'material-ui/Tabs';
-import DocumentTab from './DocumentTab';
-import DiagramTab from './DiagramTab';
+import Tabs from 'material-ui/Tabs';
 import { Route, RouteComponentProps, Switch } from 'react-router';
 import DocSearchTab from './DocSearchGraphTab';
 

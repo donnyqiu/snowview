@@ -2,14 +2,14 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { RootState } from '../../../redux/reducer';
-import D3Force from '../../../components/d3/D3Force';
 import { Option } from 'ts-option';
-import { SnowNode, SnowRelation } from '../../../model';
+import { SnowNode } from '../../../model';
 import { NodesState, RelationsState } from '../../../redux/graphReducer';
-import { fetchRelationListWorker, selectNode } from '../../../redux/action';
+import { selectNode } from '../../../redux/action';
 import { name2color } from '../../../utils/utils';
 import RegularCard from '../../../components/Cards/RegularCard';
-import { Button, withStyles, WithStyles } from 'material-ui';
+import { Button } from 'material-ui';
+import DirectedGraph from '../../../components/sigma/SigmaGraph';
 
 const mapStateToProps = (state: RootState) => ({
   nodes: state.graph.nodes,
@@ -29,8 +29,6 @@ interface GraphPanelProps {
   nodesShown: boolean;
 }
 
-class Graph extends D3Force<SnowNode, SnowRelation> {
-}
 
 class GraphPanel extends React.Component<GraphPanelProps, {}> {
 
@@ -85,10 +83,12 @@ class GraphPanel extends React.Component<GraphPanelProps, {}> {
         nodes.some(n => n.node.id === x!.target))
       .toArray();
 
+    console.log('nodes', nodes);
+
     return (
       <RegularCard headerColor="blue" cardTitle="知识图谱">
-          <Graph
-            id="neo4jd3"
+          <DirectedGraph
+            id="directedgraph"
             highlight={selectedNode}
             nodes={nodes}
             links={links}
@@ -109,7 +109,6 @@ class GraphPanel extends React.Component<GraphPanelProps, {}> {
             getSourceNodeID={d => d.source.toString()}
             getTargetNodeID={d => d.target.toString()}
             onNodeClick={id => {
-              dispatch(fetchRelationListWorker({project, id: parseInt(id, 10)}));
               dispatch(selectNode(parseInt(id, 10)));
             }}
           />

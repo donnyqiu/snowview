@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { Theme } from 'material-ui/styles';
 import { RootState } from '../../../redux/reducer';
 import { Dispatch } from 'redux';
-import { changeShownStatusWorker } from '../../../redux/action'
 
 const styles = (theme: Theme) => ({
   leftPanel: {

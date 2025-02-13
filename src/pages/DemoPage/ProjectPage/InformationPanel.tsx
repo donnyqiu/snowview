@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import {
   LinearProgress, Table, TableBody, TableCell, TableRow, Typography, WithStyles, Button
 } from 'material-ui';
-import { Dispatch } from 'redux';
 import withStyles from 'material-ui/styles/withStyles';
 import { Option } from 'ts-option';
 import * as _ from 'lodash';
