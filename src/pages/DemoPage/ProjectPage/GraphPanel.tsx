@@ -101,7 +101,7 @@ class GraphPanel extends React.Component<GraphPanelProps, {}> {
               name = n.node.properties['title'] ? n.node.properties['title'] : name;
               name = n.node.properties['name'] ? n.node.properties['name'] : name;
               name = name.replace(/<(?:.|\s)*?>/g, ' ').trim();
-              name = name.length > 10 ? name.substr(0, 8) + '...' : name;
+              name = name.length > 6 ? name.substr(0, 6) + '...' : name;
               return name;
             }}
             getLinkID={d => d.id}

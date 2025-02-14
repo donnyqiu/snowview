@@ -1,6 +1,7 @@
 import React from 'react';
 import Graph from 'graphology';
 import { Sigma } from 'sigma';
+import { NodeDisplayData } from 'sigma/types';
 import { INode } from '../../model';
 import { Option } from 'ts-option';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
@@ -53,6 +54,24 @@ class GraphComponent<N extends INode, R> extends React.Component<GraphProps<N, R
   };
   nodes: GraphNode<N>[] = [];
   links: GraphRelation<N, R>[] = [];
+
+  customLabelRenderer(context: CanvasRenderingContext2D, node: NodeDisplayData, settings: any) {
+    const size = node.size;
+    const x = node.x;
+    const y = node.y;
+    const label = node.label;
+  
+    // Set the font size and style
+    context.font = `${size * 0.4}px Arial`; // Adjust the multiplier as needed
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+  
+    // Set the label color
+    context.fillStyle = '#000';
+  
+    // Draw the label at the center of the node
+    context.fillText(label as string, x, y);
+  }
 
   updateNodes = (nextProps: GraphProps<N, R>) => {
     const { nodes } = nextProps;
@@ -107,7 +126,7 @@ class GraphComponent<N extends INode, R> extends React.Component<GraphProps<N, R
       const graph = new Graph();
 
       this.nodes.forEach(node => {
-        graph.addNode(node.raw.getID(), { label: getNodeText(node.raw), x: node.x, y: node.y, size: 20, color: getNodeColor(node.raw) });
+        graph.addNode(node.raw.getID(), { label: getNodeText(node.raw), x: node.x, y: node.y, size: 25, color: getNodeColor(node.raw) });
       });
 
       this.links.forEach(link => {
@@ -123,7 +142,8 @@ class GraphComponent<N extends INode, R> extends React.Component<GraphProps<N, R
         edgeLabelSize: 10,
         renderEdgeLabels: true,
         renderLabels: true,
-        labelSize: 12
+        labelSize: 12,
+        defaultDrawNodeLabel: this.customLabelRenderer
       });
 
       this.sigmaInstance.on('clickNode', (event) => {
